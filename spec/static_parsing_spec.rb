@@ -1,5 +1,4 @@
 
-
 require 'spec/spec_helper'
 
 describe Gtk::Mate::Parser, "when parsing Ruby from scratch" do
@@ -359,6 +358,33 @@ END
     + variable.other.readwrite.global.perl (6,39)-(6,45) closed
       c punctuation.definition.variable.perl (6,39)-(6,40) closed
     c punctuation.definition.string.end.perl (7,0)-(7,1) closed
+END
+  end
+end
+
+describe Gtk::Mate::Parser, "When parsing PHP embedded: " do
+
+  before(:each) do
+    @mb = Gtk::Mate::Buffer.new
+    @mb.set_grammar_by_name("HTML")
+  end
+
+  it "Test an embedded php string which starts at the beginning of the line" do
+    @mb.text = "<? print(\"Asdf\")?>"
+    @mb.parser.root.pretty(0).should == (t=<<END)
++ text.html.basic (0,0)-(0,18) open
+  + source.php.embedded.html (0,0)-(0,18) closed
+    +  (0,0)-(0,18) closed
+      c punctuation.whitespace.embedded.leading.php (0,0)-(0,0) closed
+      + source.php.embedded.block.html (0,0)-(0,18) closed
+        c punctuation.section.embedded.begin.php (0,0)-(0,2) closed
+        + support.function.construct.php (0,3)-(0,8) closed
+        + string.quoted.double.php meta.string-contents.quoted.double.php (0,9)-(0,15) closed
+          c punctuation.definition.string.begin.php (0,9)-(0,10) closed
+          c punctuation.definition.string.end.php (0,14)-(0,15) closed
+        c punctuation.section.embedded.end.php (0,16)-(0,18) closed
+          c source.php (0,16)-(0,17) closed
+      c punctuation.whitespace.embedded.trailing.php (0,17)-(0,18) closed
 END
   end
 end
